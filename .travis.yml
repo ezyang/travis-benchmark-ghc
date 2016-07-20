@@ -1,10 +1,6 @@
 language: generic
 sudo: false
 
-env:
- - VERSION="7.10.3"
- - PATCHFIX="b"
-
 matrix:
   include:
       - env: HVR=1
@@ -24,6 +20,8 @@ matrix:
 
 before_install: true
 install:
+ - VERSION="7.10.3"
+ - PATCHFIX="b"
  - if [ $XZ ] && [ ! -e $HOME/usr/bin/ghc-$VERSION ]; then DL_XZ=1; fi
  - BASENAME="ghc-$VERSION$PATCHFIX-x86_64-deb7-linux.tar.xz"
  - URL="http://downloads.haskell.org/~ghc/$VERSION/$BASENAME"
