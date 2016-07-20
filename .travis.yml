@@ -40,7 +40,7 @@ install:
  - if [ $DL_XZ ]; then make install; fi
  - if [ $BOOT ]; then wget https://hackage.haskell.org/package/cabal-install-1.24.0.0/cabal-install-1.24.0.0.tar.gz; fi
  - if [ $BOOT ]; then tar xf cabal-install-1.24.0.0.tar.gz; fi
- - if [ $BOOT ]; then (cd cabal-install-1.24.0.0 && EXTRA_CONFIGURE_OPTS="" ./bootstrap.sh --no-doc); fi
+ - if [ $BOOT ]; then (cd cabal-install-1.24.0.0 && EXTRA_CONFIGURE_OPTS="" ./bootstrap.sh --no-doc | ts -s %H:%M:%S.%.S ); fi
 before_script: true
 script:
  - ghc --version
