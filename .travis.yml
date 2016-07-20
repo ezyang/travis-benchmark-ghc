@@ -6,7 +6,7 @@ matrix:
       - env: HVR=1 BOOT=1
         addons: {apt: {packages: [ ghc-7.10.3-dyn, ghc-7.10.3-prof ], sources: [ hvr-ghc ]}}
 
-      - env: HVR=1 BOOT=1
+      - env: HVR=1 BOOT=1 CACHE=1
         addons: {apt: {packages: [ ghc-7.10.3-dyn, ghc-7.10.3-prof ], sources: [ hvr-ghc ]}}
         cache:
             directories:
@@ -16,7 +16,7 @@ matrix:
 #     - env: SUDO=1
 #       sudo: required
 
-#     - env: XZ=1
+#     - env: XZ=1 CACHE=1
 #       addons: {apt: {packages: [ libgmp-dev, libgmpxx4ldbl ]}}
 #       cache:
 #           directories:
@@ -40,7 +40,7 @@ install:
  - if [ $DL_XZ ]; then make install; fi
  - if [ $BOOT ]; then wget https://hackage.haskell.org/package/cabal-install-1.24.0.0/cabal-install-1.24.0.0.tar.gz; fi
  - if [ $BOOT ]; then tar xf cabal-install-1.24.0.0.tar.gz; fi
- - if [ $BOOT ]; then (cd cabal-install-1.24.0.0 && EXTRA_CONFIGURE_OPTS="" ./bootstrap.sh --no-doc -j); fi
+ - if [ $BOOT ]; then (cd cabal-install-1.24.0.0 && EXTRA_CONFIGURE_OPTS="" ./bootstrap.sh --no-doc); fi
 before_script: true
 script:
  - ghc --version
