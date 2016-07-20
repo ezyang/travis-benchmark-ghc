@@ -1,0 +1,41 @@
+language: generic
+sudo: false
+
+env:
+ - VERSION="7.10.3"
+ - PATCHFIX="b"
+
+matrix:
+  include:
+      - env: HVR=1
+        addons: {apt: {packages: [ ghc-7.10.3-dyn, ghc-7.10.3-prof ], sources: [ hvr-ghc ]}}
+
+      - env: SUDO=1
+        sudo: required
+
+      - env: XZ=1
+        addons: {apt: {packages: [ libgmp-dev, libgmpxx4ldbl ]}}
+        cache:
+            directories:
+                - $HOME/usr
+
+      - env: XZ=1
+        addons: {apt: {packages: [ libgmp-dev, libgmpxx4ldbl ]}}
+
+before_install: true
+install:
+ - if [ $XZ ] && [ ! -e $HOME/usr/bin/ghc-$VERSION ]; then DL_XZ=1; fi
+ - BASENAME="ghc-$VERSION$PATCHFIX-x86_64-deb7-linux.tar.xz"
+ - URL="http://downloads.haskell.org/~ghc/$VERSION/$BASENAME"
+ - if [ $DL_XZ ]; then wget "$URL"; fi
+ - if [ $DL_XZ ]; then tar xf "$BASENAME"; fi
+ - if [ $DL_XZ ]; then cd "ghc-$VERSION"; fi
+ - if [ $DL_XZ ]; then ./configure --prefix="$HOME/usr"; fi
+ - if [ $DL_XZ ]; then make install; fi
+ - export PATH="$HOME/usr/bin:/opt/ghc/$VERSION/bin:$PATH"
+before_script: true
+script:
+ - ghc --version
+ - echo "main = return ()" > Main.hs
+ - ghc --make Main.hs
+ - ghc --make Main.hs -prof
