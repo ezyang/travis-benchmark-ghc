@@ -3,25 +3,33 @@ sudo: false
 
 matrix:
   include:
-      - env: HVR=1
+      - env: HVR=1 BOOT=1
         addons: {apt: {packages: [ ghc-7.10.3-dyn, ghc-7.10.3-prof ], sources: [ hvr-ghc ]}}
 
-      - env: SUDO=1
-        sudo: required
-
-      - env: XZ=1
-        addons: {apt: {packages: [ libgmp-dev, libgmpxx4ldbl ]}}
+      - env: HVR=1 BOOT=1
+        addons: {apt: {packages: [ ghc-7.10.3-dyn, ghc-7.10.3-prof ], sources: [ hvr-ghc ]}}
         cache:
             directories:
-                - $HOME/usr
+                - $HOME/.cabal
+                - $HOME/.ghc
 
-      - env: XZ=1
-        addons: {apt: {packages: [ libgmp-dev, libgmpxx4ldbl ]}}
+#     - env: SUDO=1
+#       sudo: required
+
+#     - env: XZ=1
+#       addons: {apt: {packages: [ libgmp-dev, libgmpxx4ldbl ]}}
+#       cache:
+#           directories:
+#               - $HOME/usr
+
+#     - env: XZ=1
+#       addons: {apt: {packages: [ libgmp-dev, libgmpxx4ldbl ]}}
 
 before_install: true
 install:
  - VERSION="7.10.3"
  - PATCHFIX="b"
+ - export PATH="$HOME/usr/bin:/opt/ghc/$VERSION/bin:$HOME/.cabal/bin:$PATH"
  - if [ $XZ ] && [ ! -e $HOME/usr/bin/ghc-$VERSION ]; then DL_XZ=1; fi
  - BASENAME="ghc-$VERSION$PATCHFIX-x86_64-deb7-linux.tar.xz"
  - URL="http://downloads.haskell.org/~ghc/$VERSION/$BASENAME"
@@ -30,7 +38,9 @@ install:
  - if [ $DL_XZ ]; then cd "ghc-$VERSION"; fi
  - if [ $DL_XZ ]; then ./configure --prefix="$HOME/usr"; fi
  - if [ $DL_XZ ]; then make install; fi
- - export PATH="$HOME/usr/bin:/opt/ghc/$VERSION/bin:$PATH"
+ - if [ $BOOT ]; then wget https://hackage.haskell.org/package/cabal-install-1.24.0.0/cabal-install-1.24.0.0.tar.gz; fi
+ - if [ $BOOT ]; then tar xf cabal-install-1.24.0.0.tar.gz; fi
+ - if [ $BOOT ]; then (cd cabal-install-1.24.0.0 && EXTRA_CONFIGURE_OPTS="" ./bootstrap.sh --no-doc -j); fi
 before_script: true
 script:
  - ghc --version
