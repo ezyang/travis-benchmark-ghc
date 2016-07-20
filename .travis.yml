@@ -47,3 +47,6 @@ script:
  - echo "main = return ()" > Main.hs
  - ghc --make Main.hs
  - ghc --make Main.hs -prof
+before_cache:
+ - rm -fv $HOME/.cabal/packages/hackage.haskell.org/build-reports.log
+ - rm -fv $HOME/.cabal/packages/hackage.haskell.org/00-index.tar
